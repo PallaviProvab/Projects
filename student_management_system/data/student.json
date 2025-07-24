@@ -1,0 +1,154 @@
+[
+  {
+    "id": 1752477150628,
+    "rollNo": "R-1001",
+    "name": "Pallavi",
+    "age": 23,
+    "address": "Hassan",
+    "stream": "science",
+    "subjects": [
+      101,
+      102
+    ]
+  },
+  {
+    "id": 1752477364557,
+    "rollNo": "R-1001",
+    "name": "Pallavi",
+    "age": 23,
+    "address": "Hassan",
+    "stream": "science",
+    "subjects": [
+      101,
+      102
+    ]
+  },
+  {
+    "id": 1752477726881,
+    "rollNo": "R-1001",
+    "name": "Pallavi",
+    "age": 23,
+    "address": "Hassan",
+    "stream": "science",
+    "subjects": [
+      101,
+      102
+    ]
+  },
+  {
+    "id": 1752551502894
+  },
+  {
+    "id": 1752551716059,
+    "name": "Ravi Kumar",
+    "age": 17,
+    "rollNo": "A23SCI101",
+    "address": "123 Main Street, Bengaluru",
+    "stream": "science",
+    "subjectIds": [
+      1,
+      3,
+      5
+    ]
+  },
+  {
+    "id": 1752551770766,
+    "name": "Anjali Sharma",
+    "age": 18,
+    "rollNo": "ART2024-014",
+    "address": "45 Gandhi Nagar, Mysuru",
+    "stream": "arts",
+    "subjectIds": [
+      201,
+      202,
+      203
+    ]
+  },
+  {
+    "id": 1752551794678,
+    "name": "Nikhil Mehta",
+    "age": 16,
+    "rollNo": "SCI2024-017",
+    "address": "21 Tech Park Road, Pune",
+    "stream": "science",
+    "subjectIds": [
+      101,
+      104,
+      105
+    ]
+  },
+  {
+    "id": 1752551816837,
+    "name": "Priya Desai",
+    "age": 17,
+    "rollNo": "ART2024-009",
+    "address": "88 Residency Layout, Hyderabad",
+    "stream": "arts",
+    "subjectIds": [
+      202,
+      204
+    ]
+  },
+  {
+    "id": 1752552319878,
+    "name": "Ravi Kumar",
+    "age": 17,
+    "rollNo": "SCI2024-001",
+    "address": "123 MG Road, Bengaluru",
+    "stream": "science",
+    "subjectIds": [
+      101,
+      102,
+      103
+    ]
+  },
+  {
+    "id": 1752553756170,
+    "name": "Ravi Kumar",
+    "age": 17,
+    "rollNo": "SCI2024-001",
+    "address": "123 MG Road, Bengaluru",
+    "stream": "science",
+    "subjectIds": [
+      101,
+      102,
+      103
+    ]
+  },
+  {
+    "id": 1752564066014,
+    "name": "Pallavi",
+    "age": 21,
+    "rollNo": "22EEE045",
+    "address": "Bangalore",
+    "stream": "science",
+    "subjectIds": [
+      101,
+      102
+    ]
+  },
+  {
+    "id": 1752572762417,
+    "name": "Pallavi",
+    "age": 21,
+    "rollNo": "22EEE045",
+    "address": "Bangalore",
+    "stream": "science",
+    "subjectIds": [
+      101,
+      102
+    ]
+  },
+  {
+    "id": 1752578610382,
+    "name": "Pallavi",
+    "age": 21,
+    "rollNo": "22EEE045",
+    "address": "Bangalore",
+    "stream": "science",
+    "subjectIds": [
+      101,
+      102
+    ]
+  }
+]

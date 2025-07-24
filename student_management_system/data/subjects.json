@@ -1,0 +1,82 @@
+{
+  "arts": [
+    {
+      "id": 1,
+      "name": "History"
+    },
+    {
+      "id": 2,
+      "name": "Literature"
+    },
+    {
+      "id": 3,
+      "name": "Political Science"
+    },
+    {
+      "id": 4,
+      "name": "Sociology"
+    },
+    {
+      "id": 5,
+      "name": "Psychology"
+    },
+    {
+      "id": 6,
+      "name": "Philosophy"
+    },
+    {
+      "id": 7,
+      "name": "Economics"
+    },
+    {
+      "id": 1752478557759,
+      "name": "Political Science"
+    },
+    {
+      "id": 1752478591978,
+      "name": "English"
+    },
+    {
+      "id": 1752479153028,
+      "name": "English"
+    },
+    {
+      "id": 1752479161277,
+      "name": "Kannada"
+    },
+    {
+      "id": 1752554311219,
+      "name": "History"
+    }
+  ],
+  "science": [
+    {
+      "id": 8,
+      "name": "Physics"
+    },
+    {
+      "id": 9,
+      "name": "Chemistry"
+    },
+    {
+      "id": 10,
+      "name": "Biology"
+    },
+    {
+      "id": 11,
+      "name": "Mathematics"
+    },
+    {
+      "id": 12,
+      "name": "Computer Science"
+    },
+    {
+      "id": 13,
+      "name": "Environmental Science"
+    },
+    {
+      "id": 14,
+      "name": "Statistics"
+    }
+  ]
+}
