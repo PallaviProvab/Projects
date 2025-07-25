@@ -18,7 +18,7 @@ export class CreateStudentDto {
   courseId: number;
 
   @IsInt()
-  degreeId: number;
+  departmentId: number;
 
   @IsInt()
   creditLimit: number;

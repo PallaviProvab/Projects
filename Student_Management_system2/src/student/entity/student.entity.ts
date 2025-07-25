@@ -23,7 +23,7 @@ export class Student {
   course: Course;
 
   @ManyToOne(() => Department, { eager: true })
-  Department: Department;
+  department: Department;
 
   @Column()
   creditLimit: number;
