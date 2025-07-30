@@ -7,11 +7,22 @@ import { CollegeModule } from './college/college.module';
 import { CourseModule } from './course/course.module';
 import { DepartmentModule } from './department/department.module';
 import { StudentModule } from './student/student.module';
+import { MailModule } from './mail/mail.module';
+
+
+
+
+
+import { ConfigModule } from '@nestjs/config';
+
 
 
 
 @Module({
   imports: [
+     ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -21,9 +32,10 @@ import { StudentModule } from './student/student.module';
       database:'student_management_system2',
       autoLoadEntities: true,
       synchronize: true,
-    }), CollegeModule , CourseModule, DepartmentModule, StudentModule
+    }), CollegeModule , CourseModule, DepartmentModule, StudentModule, MailModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService],
 })
 export class AppModule {}

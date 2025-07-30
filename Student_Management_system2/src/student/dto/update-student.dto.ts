@@ -1,25 +1,27 @@
-import {
-  IsNotEmpty, IsEmail, IsInt, IsString
-} from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class UpdateStudentDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  firstName: string;
+  firstName?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  lastName: string;
+  lastName?: string;
 
+  @IsOptional()
   @IsInt()
-  collegeId: number;
+  collegeId?: number;
 
+  @IsOptional()
   @IsInt()
-  courseId: number;
+  courseId?: number;
 
+  @IsOptional()
   @IsInt()
-  departmentId: number;
+  departmentId?: number;
 
+  @IsOptional()
   @IsInt()
-  creditLimit: number;
+  creditLimit?: number;
 }

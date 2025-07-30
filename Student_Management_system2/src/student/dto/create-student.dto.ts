@@ -1,5 +1,8 @@
 import {
-  IsNotEmpty, IsEmail, IsInt, IsString
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsString,
 } from 'class-validator';
 
 export class CreateStudentDto {
@@ -10,6 +13,10 @@ export class CreateStudentDto {
   @IsNotEmpty()
   @IsString()
   lastName: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 
   @IsInt()
   collegeId: number;
