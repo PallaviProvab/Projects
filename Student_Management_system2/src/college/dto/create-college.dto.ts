@@ -1,4 +1,5 @@
 import { IsString, Length } from 'class-validator';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 export class CreateCollegeDto {
   @IsString()

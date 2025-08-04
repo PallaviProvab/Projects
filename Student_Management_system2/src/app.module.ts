@@ -8,12 +8,12 @@ import { CourseModule } from './course/course.module';
 import { DepartmentModule } from './department/department.module';
 import { StudentModule } from './student/student.module';
 import { MailModule } from './mail/mail.module';
-
-
-
-
-
 import { ConfigModule } from '@nestjs/config';
+
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
+
 
 
 
@@ -32,7 +32,13 @@ import { ConfigModule } from '@nestjs/config';
       database:'student_management_system2',
       autoLoadEntities: true,
       synchronize: true,
-    }), CollegeModule , CourseModule, DepartmentModule, StudentModule, MailModule
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'), 
+      sortSchema: true,
+      playground: true, 
+    }), CollegeModule , CourseModule, DepartmentModule, StudentModule, MailModule, 
   ],
   controllers: [AppController],
   providers: [

@@ -9,7 +9,7 @@ export class MailService {
   try {
     await this.mailerService.sendMail({
       to: 'pallavinatraj31@gmail.com',
-      subject: 'Welcome to Student Credit Portal 🎓',
+      subject: 'Welcome to Student Credit Portal',
       template: 'student-welcome',
       // context: { email, userId, password },
       context: { email:'Pallavi', userId:'USR123', password:'Secure123' },

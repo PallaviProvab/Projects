@@ -52,7 +52,7 @@ export class StudentService {
 
     const userId = `PRO${Date.now()}`;
     const rawPassword = crypto.randomBytes(4).toString('hex');
-    const hashedPassword = await bcrypt.hash(rawPassword, 10);
+    
 
     const student = this.studentRepo.create({
       firstName,
@@ -63,7 +63,7 @@ export class StudentService {
       creditLimit,
       email,
       userId,
-      password: hashedPassword,
+      password: rawPassword,
       role: 'student',
     });
 
@@ -123,4 +123,13 @@ export class StudentService {
     await this.studentRepo.remove(student);
     return { message: `Student with ID ${id} deleted successfully.` };
   }
+
+
+  async findByEmail(email: string): Promise<Student | null> {
+  return this.studentRepo.findOne({ where: { email } });
+}
+
+async updatePassword(student: Student): Promise<void> {
+  await this.studentRepo.save(student);
+}
 }
