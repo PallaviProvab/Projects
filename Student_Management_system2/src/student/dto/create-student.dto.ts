@@ -1,7 +1,7 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
 import { IsEmail, IsNotEmpty, IsString, IsInt } from 'class-validator';
 
-@InputType() // Add this to use in GraphQL
+@InputType() 
 export class CreateStudentDto {
   @Field()
   @IsNotEmpty()
@@ -31,5 +31,5 @@ export class CreateStudentDto {
 
   @Field(() => Int)
   @IsInt()
-  creditLimitts: number;
+  creditLimit: number;
 }

@@ -1,5 +1,6 @@
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
+
 export class UpdateStudentDto {
   @IsOptional()
   @IsString()
