@@ -1,0 +1,72 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type College {
+  courses: [Course!]
+  id: Int!
+  name: String!
+}
+
+type Course {
+  college: College!
+  departments: [Department!]
+  id: Float!
+  name: String!
+}
+
+input CreateCollegeDto {
+  name: String!
+}
+
+input CreateCourseDto {
+  collegeId: Float!
+  name: String!
+}
+
+input CreateDepartmentDto {
+  courseId: Float!
+  name: String!
+}
+
+type Department {
+  course: Course!
+  id: Float!
+  name: String!
+}
+
+type Mutation {
+  createCollege(input: CreateCollegeDto!): College!
+  createCourse(createCourseDto: CreateCourseDto!): Course!
+  createDepartment(input: CreateDepartmentDto!): Department!
+  deleteCollege(id: Int!): String!
+  deleteDepartment(id: Int!): String!
+  removeCourse(id: Int!): Boolean!
+  updateCollege(input: UpdateCollegeDto!): String!
+  updateCourse(id: Int!, updateCourseDto: UpdateCourseDto!): Course!
+  updateDepartment(id: Int!, input: UpdateDepartmentDto!): Department!
+}
+
+type Query {
+  findAllCourses: [Course!]!
+  findAllDepartments: [Department!]!
+  findCourse(id: Int!): Course!
+  findDepartment(id: Int!): Department!
+  getAllColleges: [College!]!
+  getCollegeById(id: Int!): College!
+}
+
+input UpdateCollegeDto {
+  id: Int!
+  name: String
+}
+
+input UpdateCourseDto {
+  collegeId: Float!
+  name: String!
+}
+
+input UpdateDepartmentDto {
+  courseId: Float!
+  name: String!
+}
