@@ -5,6 +5,7 @@ import { FlightsService } from './flight/flights.service';
 import { FlightsController } from './flight/flights.controller';
 import { FareQuoteService } from './flight/fareQuote.service';
 import { CommitBooking } from './flight/commitBooking.service';
+import { HoldTicketService } from './flight/holdticket.service';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { CommitBooking } from './flight/commitBooking.service';
     }),
   ],
   controllers: [FlightsController],
-  providers: [FlightsService, FareQuoteService, CommitBooking],
+  providers: [FlightsService, FareQuoteService, CommitBooking, HoldTicketService],
 })
 export class AppModule {}

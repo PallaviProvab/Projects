@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { FlightsService } from './flights.service';
-import { NotFoundException } from '@nestjs/common';
 import { FareQuoteService } from './fareQuote.service';
 import { CommitBooking } from './commitBooking.service';
+import { HoldTicketService } from './holdticket.service';
 
 
 
@@ -12,7 +12,8 @@ export class FlightsController {
   constructor(
     private readonly flightsService: FlightsService,
     private readonly FareQuoteService:FareQuoteService,
-     private readonly CommitBookingService:CommitBooking
+     private readonly CommitBookingService:CommitBooking,
+     private readonly holdTicketService : HoldTicketService
     ) {}
  
   @Post('search')
@@ -36,6 +37,11 @@ export class FlightsController {
  
       console.log("token controller called ")
     return this.FareQuoteService.GetByToken(token)
+  }
+
+   @Post('reservation')
+  async holdTicket(@Body("ResultToken") ResultToken: string) {
+    return this.holdTicketService.holdTicket(ResultToken);
   }
  
   @Post('CommitBooking')

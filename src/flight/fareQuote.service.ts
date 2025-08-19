@@ -3,7 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import { HttpService } from '@nestjs/axios';
-// import { v4 as uuidv4 } from 'uuid';
+
  
 @Injectable()
 export class FareQuoteService {
@@ -69,7 +69,7 @@ export class FareQuoteService {
               },
               PassengerBreakup: price?.PassengerBreakup ?? {},
             },
-            ResultToken: journey?.ResultToken ?? null,
+            thirdPartyToken: journey?.ResultToken ?? null,
             Attr: {
               IsRefundable: journey?.Attr?.IsRefundable ?? null,
               AirlineRemark: journey?.Attr?.AirlineRemark ?? null,
