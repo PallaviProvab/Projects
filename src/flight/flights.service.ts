@@ -1,174 +1,107 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
-import { v4 as uuidv4 } from 'uuid';
+import { createHmac } from 'crypto';
+import { LogsService } from '../logs/logs.service';
+import { ThirdPartyApiProvider } from 'src/Thirdparty_api/third-party-api.provider';
+import { SearchFlightsDto } from 'src/dto/SearchFlights.dto';
+import { FlightsFormatter } from './flights.formatter';
+import { FareQuoteDto } from '../dto/fare-quote.dto';
+
+// Define the interface for the cached data.
+// It must match the data you are saving to Redis.
+export interface CachedFlightData {
+  thirdPartyToken: string;
+  ResultToken: string;
+  // ...other properties you're caching
+}
 
 @Injectable()
 export class FlightsService {
-  constructor(
-    private readonly http: HttpService,
-    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-  ) {}
+    constructor(
+        private readonly http: HttpService,
+        @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+        private readonly logsService: LogsService,
+        private readonly thirdPartyApi: ThirdPartyApiProvider,
+        private readonly flightsFormatter: FlightsFormatter, 
+    ) {}
 
-  private formatAsJourneyList(raw: any) {
-    const journeys: any[][] = raw?.Search?.FlightDataList?.JourneyList ?? [];
+    private generateHashedToken(supplierToken: string): string {
+        const internalKey = 'my-flight-booking-project-2025';
+        return createHmac('sha256', internalKey)
+            .update(supplierToken)
+            .digest('hex');
+    }
 
-    const formattedJourneys = journeys.map((journey = []) =>
-      journey.map((flight = {}) => {
-        const priceBreakup = flight?.Price?.PriceBreakup ?? {};
-        const passengerBreakup = flight?.Price?.PassengerBreakup ?? {};
-        const attributes = flight?.Attr ?? {};
-
-        return {
-          FlightDetails: {
-            Details: (flight?.FlightDetails?.Details ?? []).map(
-              (FlightStops: any[] = []) =>
-                FlightStops.map((segment: any = {}) => ({
-                  Origin: {
-                    AirportCode: segment.Origin?.AirportCode ?? null,
-                    CityName: segment.Origin?.CityName ?? null,
-                    AirportName: segment.Origin?.AirportName ?? null,
-                    DateTime: segment.Origin?.DateTime ?? null,
-                    Terminal: segment.Origin?.Terminal ?? null,
-                  },
-                  Destination: {
-                    AirportCode: segment.Destination?.AirportCode ?? null,
-                    CityName: segment.Destination?.CityName ?? null,
-                    AirportName: segment.Destination?.AirportName ?? null,
-                    DateTime: segment.Destination?.DateTime ?? null,
-                    Terminal: segment.Destination?.Terminal ?? null,
-                  },
-                  OperatorCode: segment.OperatorCode ?? null,
-                  OperatorName: segment.OperatorName ?? null,
-                  FlightNumber: segment.FlightNumber ?? null,
-                  Duration: segment.Duration ?? null,
-                  CabinClass: segment.CabinClass ?? null,
-                  Attr: {
-                    Baggage: segment.Attr?.Baggage ?? null,
-                    CabinBaggage: segment.Attr?.CabinBaggage ?? null,
-                    AvailableSeats: segment.Attr?.AvailableSeats ?? null,
-                  },
-                  stop_over: segment.stop_over ?? null,
-                })),
-            ),
-          },
-          Price: {
-            Currency: flight.Price?.Currency ?? null,
-            TotalDisplayFare: flight.Price?.TotalDisplayFare ?? null,
-            PriceBreakup: {
-              BasicFare: priceBreakup.BasicFare ?? null,
-              Tax: priceBreakup.Tax ?? null,
-              AgentCommission: priceBreakup.AgentCommission ?? null,
-            },
-            PassengerBreakup: {
-              ADT: {
-                BasePrice: passengerBreakup.ADT?.BasePrice ?? null,
-                Tax: passengerBreakup.ADT?.Tax ?? null,
-                TotalPrice: passengerBreakup.ADT?.TotalPrice ?? null,
-                PassengerCount: passengerBreakup.ADT?.PassengerCount ?? null,
-              },
-            },
-          },
-          Attr: {
-            IsRefundable: attributes.IsRefundable ?? null,
-            AirlineRemark: attributes.AirlineRemark ?? null,
-            FareType: attributes.FareType ?? null,
-            IsLCC: attributes.IsLCC ?? null,
-            ExtraBaggage: attributes.ExtraBaggage ?? null,
-            conditions: {
-              IsPassportRequiredAtBook:
-                attributes.conditions?.IsPassportRequiredAtBook ?? null,
-              IsPanRequiredAtBook:
-                attributes.conditions?.IsPanRequiredAtBook ?? null,
-            },
-          },
-          thirdPartyToken: flight?.ResultToken ?? null ,
-          redisToken: null ,
-        };
-      }),
-    );
-
-    return {
-      Status: raw?.Status ?? null,
-      Message: raw?.Message ?? '',
-      Search: {
-        FlightDataList: {
-          JourneyList: formattedJourneys,
-        },
-      },
-    };
-  }
-
-  async searchFlights(payload: any) {
-    const apiResp = await firstValueFrom(
-      this.http.post(
-        'http://test.services.travelomatix.com/webservices/index.php/flight/service/Search',
-        payload,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-Username': 'test245274',
-            'x-Password': 'test@245',
-            'x-DomainKey': 'TMX3372451534825527',
-            'x-System': 'test',
-          },
-        },
-      ),
-    );
-
-    const rawData = apiResp?.data ?? {};
-    const formatted = this.formatAsJourneyList(rawData);
-
-    const journeyList = Array.isArray(
-      formatted.Search.FlightDataList.JourneyList,
-    )
-      ? formatted.Search.FlightDataList.JourneyList.flat()
-      : [];
-
-    for (const flight of journeyList) {
-      const thirdPartyToken = flight.thirdPartyToken?.trim();
-      if (thirdPartyToken) {
+    async searchFlights(payload: SearchFlightsDto) {
         try {
-          const redisToken = uuidv4();
+            const rawData = await this.thirdPartyApi.searchFlights(payload); // sends a request to supplier 
+            this.logsService.saveApiCall('flightSearch', payload, rawData); // save the supplier response to json
+            
+            const formatted = this.flightsFormatter.formatAsJourneyList(rawData); //formted the supplier response 
+            
+            const journeyList = Array.isArray(formatted.Search.FlightDataList.JourneyList) 
+                ? formatted.Search.FlightDataList.JourneyList.flat()
+                : [];
 
-          await this.cacheManager.set(
-            redisToken,
-            {
-              ...flight,
-              thirdPartyToken,
-            },
-            { ttl: 3600 } as any
-          );
-
-        
-          (flight as any).redisToken = redisToken;
+            for (const flight of journeyList) {
+                const thirdPartyToken = flight.thirdPartyToken?.trim(); 
+                if (thirdPartyToken) {
+                    const redisToken = this.generateHashedToken(thirdPartyToken); //Generate the redis token
+                    await this.cacheManager.set(
+                        redisToken,
+                        // Save the data to the cache using consistent property names
+                        { ...flight, thirdPartyToken: thirdPartyToken },
+                        { ttl: 3600 } as any,
+                    );
+                    (flight as any).redisToken = redisToken;
+                }
+            }
+            return formatted;
         } catch (e) {
-          console.error('Cache SET failed:', e);
+            console.error('API call or cache operation failed:', e);
+            throw e;
         }
-      }
     }
 
-    return formatted;
-  }
+    async getByToken(token: string): Promise<CachedFlightData> {
+        const cleanToken = token?.trim();
+        if (!cleanToken) {
+            throw new NotFoundException('Token not provided');
+        }
 
-  async getByToken(token: string) {
-    const cleanToken = token?.trim();
-    console.log('Looking up token in cache:', cleanToken);
-
-    try {
-      const result = await this.cacheManager.get(cleanToken);
-      console.log('Cache result:', result);
-
-      if (!result) {
-        throw new NotFoundException('Result not found for this token');
-      }
-
-      return result;
-    } catch (e) {
-      console.error('Cache GET failed:', e);
-      throw new NotFoundException('Error retrieving token');
+        try {
+            // Use the generic type to inform TypeScript about the expected data structure
+            const result = await this.cacheManager.get<CachedFlightData>(cleanToken);
+            if (!result) {
+                throw new NotFoundException('Result not found for this token');
+            }
+            return result;
+        } catch (e) {
+            console.error('Cache GET failed:', e);
+            throw new NotFoundException('Error retrieving token');
+        }
     }
-  }
+
+    async fareQuote(payload: FareQuoteDto) {
+        // Step 1: Use the redisToken to retrieve the original flight data from the cache.
+        // `cachedData` is now correctly typed as `CachedFlightData`
+        const cachedData = await this.getByToken(payload.redisToken);
+        
+        // Step 2: Use the original thirdPartyToken to make the external API call.
+        // The property is now correctly accessed as `thirdPartyToken`
+        const apiPayload = {
+            ResultToken: cachedData.thirdPartyToken,
+        };
+
+        try {
+            const rawData = await this.thirdPartyApi.fareQuote(apiPayload);
+            this.logsService.saveApiCall('fareQuote', apiPayload, rawData);
+            return rawData;
+        } catch (e) {
+            console.log('Fare Quote API call failed:', e.response?.data || e.message);
+            throw e;
+        }
+    }
 }
