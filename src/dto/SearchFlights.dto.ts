@@ -1,69 +1,73 @@
+// src/dto/search-flights.dto.ts
 import {
-  IsInt,
-  Min,
   IsEnum,
-  IsArray,
-  ValidateNested,
-  ArrayMinSize,
-  IsOptional,
+  IsNotEmpty,
+  IsNumber,
   IsString,
-  ValidateIf
+  ValidateNested,
+  IsOptional,
+  IsArray
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { SegmentDto } from './Segment.dto';
 
 export enum JourneyType {
-  ONEWAY = 'OneWay',
-  RETURN = 'Return',
-  MULTICITY = 'Multicity',
+
+  OneWay = 'OneWay',
+  Return = 'Return',
+  MultiCity = 'Multicity',
 }
 
 export enum CabinClass {
-  ECONOMY = 'Economy',
-  BUSINESS = 'Business',
-  FIRST = 'First',
-  PREMIUM_ECONOMY = 'PremiumEconomy',
-  PREMIUM_BUSINESS = 'PremiumBusiness',
+  Economy = 'Economy',
+  Business = 'Business',
+  First = 'First',
+  PremiumEconomy = 'PremiumEconomy',
+  PremiumBusiness = 'PremiumBusiness',
+ 
+
 }
 
 export class SearchFlightsDto {
-  @IsInt()
-  @Min(1)
-  @Type(() => Number)
+  @IsNotEmpty()
+  @IsNumber()
   AdultCount: number;
 
-  @IsInt()
-  @Min(0)
-  @Type(() => Number)
+  @IsNotEmpty()
+  @IsNumber()
   ChildCount: number;
 
-  @IsInt()
-  @Min(0)
-  @Type(() => Number)
+  @IsNotEmpty()
+  @IsNumber()
   InfantCount: number;
 
+  @IsNotEmpty()
   @IsEnum(JourneyType)
   JourneyType: JourneyType;
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  PreferredAirlines?: string[];
+  @IsString({each:true})
+  PreferredAirlines: string;
 
+  @IsNotEmpty()
   @IsEnum(CabinClass)
   CabinClass: CabinClass;
 
-  @IsArray()
-  @ArrayMinSize(1)
+  @IsOptional()
+  @IsString()
+  Currency: string;
+
+  @IsOptional()
+  @IsString()
+  NonStopFlights: string;
+
+  @IsOptional()
+  @IsNumber()
+  PlusMinus3Days: number;
+
+  @IsNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => SegmentDto)
-  // This is the key change. We validate the return date conditionally.
-  // We need an array of segments for all journey types.
-  // For 'Return', the segments array should contain both the departure and return flights.
   Segments: SegmentDto[];
-
-  @ValidateIf(o => o.JourneyType === JourneyType.RETURN)
-  @ValidateNested()
-  @Type(() => SegmentDto)
-  returnSegment: SegmentDto;
 }

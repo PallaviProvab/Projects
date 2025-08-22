@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable , BadRequestException} from '@nestjs/common';
+import { BookingResponseDto } from 'src/dto/booking-response.dto';
 
 @Injectable()
 export class FlightsFormatter {
@@ -87,4 +88,27 @@ export class FlightsFormatter {
             },
         };
     }
+
+    //This is for Formate the Commit Booking Response 
+    formatBookingResponse(rawResponse: any): BookingResponseDto {
+        const bookingDetails = rawResponse?.CommitBooking?.[0]?.BookingDetails?.[0];
+
+        if (!bookingDetails) {
+            throw new BadRequestException('Invalid booking response from third-party API.');
+        }
+
+        const passengers = bookingDetails.PassengerDetails.map(p => ({
+            TicketNumber: p.TicketNumber,
+            FirstName: p.FirstName,
+            LastName: p.LastName,
+        }));
+
+        return {
+            PNR: bookingDetails.PNR,
+            BookingId: bookingDetails.BookingId,
+            GDSPNR: bookingDetails.GDSPNR,
+            PassengerDetails: passengers,
+        };
+    }
+    
 }

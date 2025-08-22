@@ -26,25 +26,16 @@ export class FlightsController {
     return this.flightsService.getByToken(token);
   }
 
-  // @Post('FareQuote')
-  // async FareQuote(@Body() body:any){
-  //      return this.FareQuoteService.FetchFareQuoteFromApi(body)
-  // }
- 
-  // @Get('by-Search-token/:token')
-  // async ByToken(@Param('token') token: string) {
- 
-  //     console.log("token controller called ")
-  //   return this.FareQuoteService.GetByToken(token)
-  // }
+  @Post('CommitBooking')
+  async CommitBooking(@Body() body:any){
+     return this.flightsService.commitBooking(body)
+  }
+
 
   //  @Post('reservation')
   // async holdTicket(@Body("ResultToken") ResultToken: string) {
   //   return this.holdTicketService.holdTicket(ResultToken);
   // }
  
-  // @Post('CommitBooking')
-  // async CommitBooking(@Body() body:any){
-  //    return this.CommitBookingService.CommitBooking(body)
-  // }
+  
 }
